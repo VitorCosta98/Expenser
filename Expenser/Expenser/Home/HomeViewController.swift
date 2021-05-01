@@ -10,12 +10,27 @@ import UIKit
 class HomeViewController: UIViewController {
     
     let screen = HomeScreen()
+    let data = ["Fly To Paris", "Groceries", "Salary + Bonus", "Clothes", "Home Rent"]
+    let values = [-470, -179, 1265, -523, -754]
+    let icons = ["fly", "groceries", "wallet", "clothes", "home rent"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.isHidden = true
         
         view.addSubview(screen)
+        
+        screen.briefView.setup(title: "CURRENT BALANCE", value: "\(values.reduce(0, +))", date: "\(Date().month) \(Date().year)")
+        
+        let income = values.map { value in
+            return value > 0 ? value : 0
+        }
+        
+        let expense = values.map { value in
+            return value < 0 ? value : 0
+        }
+        
+        screen.leftBox.setup(title: "INCOME", value: "\(income.reduce(0, +))", icon: UIImage(named: "arrow-green")!)
+        screen.rightBox.setup(title: "EXPENSE", value: "\(expense.reduce(0, +))", icon: UIImage(named: "arrow-red")!)
         
         screen.snp.makeConstraints { make in
             make.left.top.right.bottom.equalToSuperview()
@@ -33,11 +48,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as? HomeCellView {
-            cell.setup(product: Product(image: UIImage(named: "fly")!, value: "- $523", date: "May 12 at 9:30PM", title: "Fly to Paris"))
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "HomeCell", for: indexPath) as? HomeCellView {
+            cell.setup(product: Product(image: UIImage(named: icons[indexPath.section])!,
+                                        value: "\(values[indexPath.section])",
+                                        date: "May \(Int.random(in: 1 ... 28)) at \(Int.random(in: 1 ... 12)):\(Int.random(in: 1 ... 60))\(["A", "P"].randomElement() ?? "")M",
+                                        title: data[indexPath.section]))
             
             cell.layer.shadowColor = UIColor.black.cgColor
-            cell.layer.shadowOpacity = 1
+            cell.layer.shadowOpacity = 0.2
             cell.layer.shadowOffset = .zero
             cell.layer.shadowRadius = 10
             
@@ -63,24 +81,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 10
+        return data.count
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 8
-    }
-    
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == 9 {
-            let footerView = UIView()
-            footerView.backgroundColor = UIColor.clear
-            return footerView
-        }
-        
-        return nil
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 8
     }
 }

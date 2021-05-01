@@ -9,7 +9,7 @@ import UIKit
 
 final class HomeBriefView: UIView {
     
-    lazy var title: UILabel = {
+    private lazy var title: UILabel = {
         var label = UILabel(frame: .zero)
         label.textColor = .lightGray
         label.textAlignment = .center
@@ -18,7 +18,7 @@ final class HomeBriefView: UIView {
         return label
     }()
     
-    lazy var balance: UILabel = {
+    private lazy var balance: UILabel = {
         var label = UILabel(frame: .zero)
         label.textColor = .white
         label.textAlignment = .center
@@ -27,7 +27,7 @@ final class HomeBriefView: UIView {
         return label
     }()
     
-    lazy var month: UILabel = {
+    private lazy var month: UILabel = {
         var label = UILabel(frame: .zero)
         label.textColor = .white
         label.textAlignment = .center
@@ -36,13 +36,19 @@ final class HomeBriefView: UIView {
         return label
     }()
     
-    lazy var textContainer: UIStackView = {
+    private lazy var textContainer: UIStackView = {
         let stack = UIStackView(frame: .zero)
         stack.axis = .vertical
         stack.distribution = .fillProportionally
         stack.spacing = 8
         return stack
     }()
+    
+    func setup(title: String, value: String, date: String) {
+        self.title.text = title
+        self.balance.text = value
+        self.month.text = date
+    }
     
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)

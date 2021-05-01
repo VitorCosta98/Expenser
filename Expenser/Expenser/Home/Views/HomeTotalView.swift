@@ -9,40 +9,35 @@ import UIKit
 
 final class HomeTotalView: UIView {
     
-    let image: UIImageView = {
+    private lazy var iconImage: UIImageView = {
         var view = UIImageView(frame: .zero)
-        guard let image = UIImage(named: "arrow-green") else { return view }
-        view.image = image
         view.backgroundColor = .white
         view.contentMode = .scaleToFill
-        view.layer.cornerRadius = 10
         view.layer.masksToBounds = true
         return view
     }()
     
-    let clearImage: UIImageView = {
+    private lazy var clearImage: UIImageView = {
         var view = UIImageView(frame: .zero)
         view.backgroundColor = .clear
         return view
     }()
     
-    lazy var title: UILabel = {
+    private lazy var title: UILabel = {
         var label = UILabel(frame: .zero)
         label.textColor = .lightGray
         label.font = .preferredFont(forTextStyle: .callout)
-        label.text = "INCOME"
         return label
     }()
     
-    lazy var value: UILabel = {
+    private lazy var value: UILabel = {
         var label = UILabel(frame: .zero)
         label.textColor = .white
         label.font = .systemFont(ofSize: 20)
-        label.text = "42,500"
         return label
     }()
     
-    lazy var verticalContainer: UIStackView = {
+    private lazy var verticalContainer: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [title, value])
         stack.axis = .vertical
         stack.distribution = .fillEqually
@@ -50,21 +45,27 @@ final class HomeTotalView: UIView {
         return stack
     }()
     
-    lazy var imageContainer: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [image, clearImage])
+    private lazy var imageContainer: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [iconImage, clearImage])
         stack.axis = .vertical
         stack.distribution = .fillEqually
         stack.spacing = 5
         return stack
     }()
     
-    lazy var horizontalContainer: UIStackView = {
+    private lazy var horizontalContainer: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [imageContainer, verticalContainer])
         stack.axis = .horizontal
         stack.distribution = .fill
         stack.spacing = 8
         return stack
     }()
+    
+    func setup(title: String, value: String, icon: UIImage) {
+        self.title.text = title
+        self.value.text = value
+        self.iconImage.image = icon
+    }
     
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
@@ -84,7 +85,7 @@ extension HomeTotalView: CodeView {
     
     func setupConstraints() {
         // Setup constraints
-        image.snp.makeConstraints { make in
+        iconImage.snp.makeConstraints { make in
             make.height.width.equalTo(20)
             make.left.equalTo(40)
         }
@@ -100,5 +101,6 @@ extension HomeTotalView: CodeView {
     
     func setupAdditionalConfiguration() {
         // Additional configurations
+        iconImage.makeRounded(height: 20)
     }
 }

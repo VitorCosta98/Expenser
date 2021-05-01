@@ -9,14 +9,13 @@ import UIKit
 
 final class HomeScreen: UIView {
     
-    let abstractView = HomeBriefView()
+    let briefView = HomeBriefView()
     let leftBox = HomeTotalView()
     let rightBox = HomeTotalView()
     
     lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero)
-        table.register(HomeCellView.self, forCellReuseIdentifier: "Cell")
-        
+        table.register(HomeCellView.self, forCellReuseIdentifier: "HomeCell")
         return table
     }()
     
@@ -25,14 +24,6 @@ final class HomeScreen: UIView {
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.spacing = 8
-        return stack
-    }()
-    
-    private lazy var verticalContainer: UIStackView = {
-        var stack = UIStackView(arrangedSubviews: [abstractView, gridContainer])
-        stack.axis = .vertical
-        stack.distribution = .fill
-        stack.spacing = 5
         return stack
     }()
     
@@ -63,27 +54,28 @@ extension HomeScreen: CodeView {
         // Add views(components)
         addSubview(topView)
         addSubview(bottomView)
-        topView.addSubview(verticalContainer)
+        topView.addSubview(briefView)
+        topView.addSubview(gridContainer)
         bottomView.addSubview(tableView)
     }
     
     func setupConstraints() {
         // Setup constraints
         topView.snp.makeConstraints { make in
-            make.height.equalTo(320)
-            make.top.equalToSuperview()
-            make.left.equalToSuperview()
-            make.right.equalToSuperview()
+            make.height.equalTo(330)
+            make.top.left.right.equalToSuperview()
         }
         
-        verticalContainer.snp.makeConstraints { make in
-            make.topMargin.equalTo(8)
-            make.left.equalTo(20)
-            make.right.equalTo(-20)
-            make.bottomMargin.equalTo(-60)
+        briefView.snp.makeConstraints { make in
+            make.height.equalTo(200)
+            make.top.equalTo(self.snp.top).offset(8)
+            make.centerX.equalTo(self.snp.centerX)
         }
         
         gridContainer.snp.makeConstraints { make in
+            make.top.equalTo(briefView.snp.bottom)
+            make.left.equalTo(10)
+            make.right.equalTo(-10)
             make.height.equalTo(50)
         }
         
@@ -93,10 +85,8 @@ extension HomeScreen: CodeView {
         }
         
         tableView.snp.makeConstraints { make in
-            make.bottom.equalTo(0)
             make.top.equalTo(-30)
-            make.left.equalTo(0)
-            make.right.equalTo(0)
+            make.left.bottom.right.equalTo(0)
         }
     }
     

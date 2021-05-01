@@ -1,19 +1,18 @@
 //
-//  CellView.swift
+//  CategoriesCellView.swift
 //  Expenser
 //
-//  Created by Vitor Costa on 21/03/21.
+//  Created by Vitor Costa on 01/05/21.
 //
 
 import UIKit
 
-final class HomeCellView: UITableViewCell {
+final class CategoriesCellView: UITableViewCell {
     
     let colors: [UIColor] = [.blue, .brown, .cyan, .yellow, .purple, .magenta, .green, .gray, .orange, .red, .systemIndigo, .systemPink, .systemTeal]
     
     private lazy var roundedView: UIView = {
         let view = UIView(frame: .zero)
-        view.backgroundColor = UIColor.yellow.withAlphaComponent(0.5)
         return view
     }()
     
@@ -25,6 +24,16 @@ final class HomeCellView: UITableViewCell {
         return view
     }()
     
+    private lazy var editImage: UIImageView = {
+        var view = UIImageView(frame: .zero)
+        view.backgroundColor = .clear
+        view.contentMode = .scaleAspectFill
+        view.contentScaleFactor = 0.5
+        guard let image = UIImage(named: "next") else { return UIImageView() }
+        view.image = image
+        return view
+    }()
+    
     private lazy var title: UILabel = {
         var label = UILabel(frame: .zero)
         label.textAlignment = .center
@@ -32,32 +41,6 @@ final class HomeCellView: UITableViewCell {
         label.font = .systemFont(ofSize: 18)
         return label
     }()
-    
-    private lazy var date: UILabel = {
-        var label = UILabel(frame: .zero)
-        label.textAlignment = .center
-        label.textColor = .lightGray
-        label.font = .systemFont(ofSize: 15)
-        return label
-    }()
-    
-    private lazy var value: UILabel = {
-        var label = UILabel(frame: .zero)
-        label.textColor = .red
-        label.textAlignment = .right
-        label.font = .systemFont(ofSize: 20)
-        return label
-    }()
-    
-    func setup(product: Product) {
-        self.iconImage.image = product.image
-        self.title.text = product.title
-        self.value.text = Int(product.value) ?? 0 < 0 ? "- $\(product.value.replacingOccurrences(of: "-", with: ""))" : "+ $\(product.value)"
-        self.value.textColor = Int(product.value) ?? 0 < 0 ? .red : .init(red: 0.4, green: 0.8, blue: 0.4, alpha: 1)
-        self.date.text = product.date
-        
-        roundedView.backgroundColor = colors.randomElement()?.withAlphaComponent(0.5)
-    }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -72,21 +55,26 @@ final class HomeCellView: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setup(category: Category) {
+        iconImage.image = category.icon
+        title.text = category.name
+        
+        roundedView.backgroundColor = colors.randomElement()?.withAlphaComponent(0.5)
+    }
 }
 
-extension HomeCellView: CodeView {
+extension CategoriesCellView: CodeView {
     func buildViewHierarchy() {
         // Add views(components)
         addSubview(roundedView)
         addSubview(iconImage)
         addSubview(title)
-        addSubview(date)
-        addSubview(value)
+        addSubview(editImage)
     }
     
     func setupConstraints() {
         // Setup constraints
-        
         contentView.snp.makeConstraints { make in
             make.left.equalTo(10)
             make.top.bottom.equalTo(0)
@@ -107,28 +95,19 @@ extension HomeCellView: CodeView {
         
         title.snp.makeConstraints { make in
             make.left.equalTo(roundedView.snp.rightMargin).offset(15)
-            make.top.equalTo(15)
+            make.centerY.equalTo(roundedView.snp.centerY)
         }
         
-        date.snp.makeConstraints { make in
-            make.left.equalTo(roundedView.snp.rightMargin).offset(15)
-            make.top.equalTo(title.snp.bottomMargin).offset(8)
-        }
-        
-        value.snp.makeConstraints { make in
+        editImage.snp.makeConstraints { make in
+            make.height.width.equalTo(15)
+            make.right.equalTo(-15)
             make.centerY.equalTo(contentView.snp.centerY)
-            make.right.equalTo(contentView.snp.right).inset(10)
         }
     }
     
     func setupAdditionalConfiguration() {
         // Additional configurations
         contentView.backgroundColor = .white
-        contentView.layer.cornerRadius = 8
-        contentView.clipsToBounds = true
-        
-        self.backgroundColor = .clear
-        self.layer.cornerRadius = 8
         
         roundedView.makeRounded(height: 50)
         iconImage.layer.masksToBounds = true
