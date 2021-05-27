@@ -59,4 +59,8 @@ extension CategoriesViewController: UITableViewDelegate, UITableViewDataSource {
         label.backgroundColor = .white
         return label
     }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 35
+    }
 }
